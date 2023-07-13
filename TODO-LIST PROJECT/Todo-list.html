@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            TODO LIST PROJECT
+        </title>
+        <style>
+            body{
+                font-family:Arial;
+            }
+            .todo,.todo-grid {
+                display:grid;
+                grid-template-columns: 200px 150px 100px;
+                column-gap:10px;
+                row-gap:10px;
+                align-items:center;
+            }
+            .todo {
+                margin-bottom:10px;
+                align-items:stretch;
+            }
+            .input-name,.due-name {
+                font-size:15px;
+                padding:6px;
+            }
+            .add-button {
+                background-color:green;
+                color:white;
+                font-size:15px;
+                border:none;
+                cursor:pointer;
+            }
+            .todo-delete {
+                background-color:darkred;
+                color:white;
+                font-size:15px;
+                border:none;
+                cursor:pointer;
+                padding : 10px 0 10px 0;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="todo"><input placeholder="Todo name" class="js-input input-name">
+        <input type="date" class="js-duedate-input due-name">
+        <button onclick="todo();" class="add-button">Add</button></div>
+        <div class="js-todo-list todo-grid"></div>
+        <script>
+            const toDo = JSON.parse(localStorage.getItem('toDo')) || [{name:'make dinner',duedate:'2023-07-12'}];
+            render();
+            function render() {
+                let todoHTML = '';
+                for(let i=0;i<toDo.length;i++) {
+                    const todoobj = toDo[i];
+                    const { name,duedate } = todoobj;
+                    const html = `
+                       <div>${name}</div>
+                       <div>${duedate}</div>
+                       <button onclick="toDo.splice(${i},1);render();saveTo();" class="todo-delete">Delete</button>`;
+                    todoHTML += html;
+                }
+                document.querySelector('.js-todo-list').innerHTML  = todoHTML;
+            }
+            function todo() {
+                const inputElement = document.querySelector('.js-input');
+                const name = inputElement.value;
+                const dueElement = document.querySelector('.js-duedate-input');
+                const duedate = dueElement.value;
+                toDo.push({
+                    name:name,
+                    duedate:duedate
+                });
+                inputElement.value = '';
+                render();
+                saveTo();
+            }
+            function saveTo() {
+                localStorage.setItem('toDo', JSON.stringify(toDo));
+            }
+        </script>
+    </body>
+</html>
